@@ -89,10 +89,9 @@ int main(int argc, char **argv) {
         // printf("%d,%d,%f\n", size, MATRIX_SIZE, end_time - start_time);
 
         double execTime = end_time - start_time;
-        double GFLOPS = (2.0 * MATRIX_SIZE * MATRIX_SIZE * MATRIX_SIZE) / (execTime * 1e9);
 
         // print for 3.5
-        printf("%d,%d,%f,%f\n", size, MATRIX_SIZE, execTime, GFLOPS);
+        printf("%d,%d,%f\n", size, MATRIX_SIZE, execTime);
 
         /* Output C. */
         // for (int i = 0; i < MATRIX_SIZE; ++i) {

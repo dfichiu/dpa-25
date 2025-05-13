@@ -5,7 +5,7 @@
 #include <time.h>
 
 int main(int argc, char* argv[]) {
-    int N = 100;
+    int N;
     int* message;
     int tag = 0;
     double start_time, end_time, elapsed_time, max_time;
@@ -15,6 +15,8 @@ int main(int argc, char* argv[]) {
     int rank, size;
     MPI_Comm_rank(MPI_COMM_WORLD, &rank);
     MPI_Comm_size(MPI_COMM_WORLD, &size);
+
+    N = atoi(argv[1]);
 
     message = (int*)malloc(N * sizeof(int));
 
@@ -36,7 +38,7 @@ int main(int argc, char* argv[]) {
         }
         int source = rank - (1 << i);
         MPI_Recv(message, N, MPI_INT, source, tag, MPI_COMM_WORLD, MPI_STATUS_IGNORE);
-        printf("%d received message: [%d, %d, %d]\n", rank, message[N - 1], message[N - 2], message[N - 3]);
+        // printf("%d received message: [%d, %d, %d]\n", rank, message[N - 1], message[N - 2], message[N - 3]);
     }
     for (int k = ceil(log2(size)) - 1; k >= 0; k--) {
         int dest = rank + pow(2, k);
@@ -51,7 +53,8 @@ int main(int argc, char* argv[]) {
     MPI_Reduce(&elapsed_time, &max_time, 1, MPI_DOUBLE, MPI_MAX, 0, MPI_COMM_WORLD);
 
     if (rank == 0) {
-        printf("Binomial tree broadcast completed in %f seconds (max across all ranks)\n", max_time);
+        // N, size, max_time
+        printf("%i,%i,%f\n", N, size, max_time);
     }
     
     free(message);
