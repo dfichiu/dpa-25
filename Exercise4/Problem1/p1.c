@@ -37,8 +37,9 @@ int main(int argc, char* argv[]){
 			l = strtok(NULL, " ");
 			m = atoi(l);
 			
-			ver = malloc(n * sizeof(int));
-			memset(ver, 0, n * sizeof(int));
+			ver = malloc((n + 1) * sizeof(int));
+			memset(ver, 0, (n + 1) * sizeof(int));
+			ver[n] = 2 * m;
 			
 			edges = malloc(2 * m * sizeof(int));
 			memset(edges, -1, 2 * m * sizeof(int));
@@ -98,7 +99,7 @@ int main(int argc, char* argv[]){
 	
 	//Sequential
 	int * depthv = malloc(n * sizeof(int));
-	
+	memset(depthv, -1, n* sizeof(int));
 	{
 	double itime, ftime, exec_time;
     	itime = omp_get_wtime();
@@ -257,6 +258,8 @@ int main(int argc, char* argv[]){
    	printf("\n\nTime taken is %f \n", exec_time);
    	
    	for(int i = 0; i < n; i++){
+   		
+   		if(depthv[i] == -1) printf("NO DEPTH");
    		if(depthv[i] != depthv2[i]) {
    		
    			 printf("Different Depth %d, %d, %d \n", i, depthv[i], depthv2[i]);
