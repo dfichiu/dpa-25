@@ -144,7 +144,7 @@ int main(int argc, char* argv[]){
 	
     	ftime = omp_get_wtime();
 	exec_time = ftime - itime;
-   	printf("\n\nTime taken is %f", exec_time);
+   	printf("\n\nSequential Time taken is %f", exec_time);
 	
 	free(queue);
 	free(visited);
@@ -255,11 +255,10 @@ int main(int argc, char* argv[]){
 
 	ftime = omp_get_wtime();
 	exec_time = ftime - itime;
-   	printf("\n\nTime taken is %f \n", exec_time);
+   	printf("\n\nParallel Time taken is %f \n", exec_time);
    	
    	for(int i = 0; i < n; i++){
    		
-   		if(depthv[i] == -1) printf("NO DEPTH");
    		if(depthv[i] != depthv2[i]) {
    		
    			 printf("Different Depth %d, %d, %d \n", i, depthv[i], depthv2[i]);
