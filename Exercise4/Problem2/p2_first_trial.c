@@ -7,7 +7,7 @@
 #include <string.h>
 
 #define MAX_SIZE 1000000
-// #define APPROACH 1
+#define APPROACH 1
 
 // Defining the Queue structure
 typedef struct {
@@ -100,8 +100,6 @@ int main(int argc, char* argv[]) {
 	
 	bool firstline = false;
     fp = fopen("data/road_usa.mtx", "r");
-
-    int APPROACH = 1;
 		
 	while((read = getline(&line, &len, fp)) != -1) {
 		if(line[0] != '%' && !firstline) {
@@ -137,13 +135,13 @@ int main(int argc, char* argv[]) {
 			l = strtok(NULL, " ");
 			right = atoi(l) - 1;
 
-            // if (APPROACH == 1) {
-            //     if (right < left) {
-            //         tmp = left;
-            //         left = right;
-            //         right = tmp;
-            //     }
-            // }
+            if (APPROACH == 1) {
+                if (right < left) {
+                    tmp = left;
+                    left = right;
+                    right = tmp;
+                }
+            }
 			
 			tmp_edges[edge_idx] = left;
 			tmp_edges[edge_idx + 1] = right;
