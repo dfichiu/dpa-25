@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <time.h>
-// #include <omp.h>
+#include <omp.h>
 #include <math.h>
 #include <stdbool.h>
 #include <string.h>
@@ -69,12 +69,16 @@ int get_minimal_degree(int n, int* V, int m, int* E) {
     int nNeighbors;
     int minDeg = MAX;
 
+    #pragma omp parallel for
     for (int vIdx = 0; vIdx < n; vIdx++) {
         // Check if the vertex hasn't already been removed.
         int vDeg = get_vertex_degree(vIdx, n, V, m, E);
         
-        if (vDeg > 0 && vDeg < minDeg)
-            minDeg = vDeg;
+        #pragma omp critical
+        {
+            if (vDeg > 0 && vDeg < minDeg)
+                minDeg = vDeg;
+        }
         
     }
 
@@ -180,25 +184,34 @@ int main(int argc, char* argv[]) {
     int *q;
     q = malloc(n * sizeof(int));
 
+    double itime = omp_get_wtime();
+    // double begin = clock();
+
     while (currNoOfVertices > 0) {
+        #pragma omp parallel for
         for (int vIdx = 0; vIdx < n; vIdx++)
             if (Q[vIdx] != -1) 
                 Q[vIdx] = get_vertex_degree(vIdx, n, V, m, E);
 
         // printf("d = %d\n", d);
+        #pragma omp parallel for
         for (int vIdx = 0; vIdx < n; vIdx++) {
             if (Q[vIdx] != -1 && Q[vIdx] <= d) {
                 // printf("vIdx = %d\n", vIdx);
-                if (currPrioTaken == 0) {
-                    currPrioTaken = 1;
-                    q[vIdx] = currPrio;
-                } else {
-                    q[vIdx] = vIdx;
+                #pragma omp critical
+                {
+                    if (currPrioTaken == 0) {
+                        currPrioTaken = 1;
+                        q[vIdx] = currPrio;
+                    } else {
+                        q[vIdx] = vIdx;
+                    }
                 }
 
                 // Remove processed vertex from V.
                 remove_vertex(vIdx, n, V, m, E);
                 Q[vIdx] = -1;
+                # pragma omp atomic
                 currNoOfVertices--;
             }
         }
@@ -212,6 +225,14 @@ int main(int argc, char* argv[]) {
         d = (d + 1 > dNew) ? d + 1 : dNew;
         // int d = get_minimal_degree(n, V, m, E);
     }
+
+    double ftime = omp_get_wtime();
+	double exec_time = ftime - itime;
+
+    // double end = clock();
+    // double exec_time = (double)(end - begin) / CLOCKS_PER_SEC;
+
+    printf("%f", exec_time);
 
     return 0;
 }
